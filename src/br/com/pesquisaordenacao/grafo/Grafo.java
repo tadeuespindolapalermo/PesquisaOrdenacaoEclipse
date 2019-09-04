@@ -12,22 +12,22 @@ public class Grafo extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = -4316231587165133912L;
 
-	private int VertexCount;
-	private int EdgeCount;
+	private int vertexCount;
+	private int edgeCount;
 	private boolean digraph;
 	private boolean adjacencies[][];
-	public GraphDetails graphDetails;
+	public GraphDetails graphDetails = null;
 
-	private int x_coord_V[];
-	private int y_coord_V[];
+	private int xCoordV[];
+	private int yCoordV[];
 	private Color colorNode[];
 
-	int RAIO_NO = 50;
-	int X_0 = 70;
-	int Y_0 = 70;
-	int X_OFF = 22;
-	int Y_OFF = 27;
-	int MAX_COL = 4;
+	private static final int RAIO_NO = 50;	
+	private static final int X_OFF = 22;
+	private static final int Y_OFF = 27;
+	private static final int MAX_COL = 4;
+	private int x0 = 70;
+	private int y0 = 70;
 
 	private boolean done;
 	private int primeiro;
@@ -41,13 +41,14 @@ public class Grafo extends JPanel implements MouseListener {
 	public Grafo() { }
 
 	public Grafo(int numVertices, boolean flag) {
-		VertexCount = numVertices;
-		EdgeCount = 0;
+		
+		vertexCount = numVertices;
+		edgeCount = 0;
 		digraph = flag;
-		adjacencies = new boolean[VertexCount][VertexCount];
-		x_coord_V = new int[VertexCount];
-		y_coord_V = new int[VertexCount];
-		colorNode = new Color[VertexCount];
+		adjacencies = new boolean[vertexCount][vertexCount];
+		xCoordV = new int[vertexCount];
+		yCoordV = new int[vertexCount];
+		colorNode = new Color[vertexCount];
 
 		graphDetails = new GraphDetails();
 		super.addMouseListener(this);
@@ -59,7 +60,7 @@ public class Grafo extends JPanel implements MouseListener {
 
 		button = new JButton("Circular");		
 		button.addActionListener(e -> {
-			isCircular = true; // Circular
+			isCircular = true; 
 			done = false;
 			repaint();
 		});
@@ -73,65 +74,18 @@ public class Grafo extends JPanel implements MouseListener {
 	}
 
 	int numVertices() {
-		return VertexCount;
+		return vertexCount;
 	}
 
 	int numEdges() {
-		return EdgeCount;
+		return edgeCount;
 	}
 
 	boolean directed() {
 		return digraph;
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		
-		for (int i = 0; i < this.numVertices(); i++) {
-			
-			// colorNode[i] = Color.GREEN;
-
-			int d_x = 0;
-			int d_y = 0;
-
-			d_x = Math.abs(x_coord_V[i] - e.getX());
-			d_y = Math.abs(y_coord_V[i] - e.getY());
-
-			if (d_x <= (int) (RAIO_NO) && d_y <= (int) (RAIO_NO)) {
-				if ((primeiro == -1) && (segundo == -1)) {
-					colorNode[i] = Color.GREEN;
-					primeiro = i;
-					System.out.println("Primeiro NÃ³ Selecionado");
-				} else if (segundo == -1) {
-					colorNode[i] = Color.RED;
-					segundo = i;
-					System.out.println("Segundo NÃ³ Selecionado");
-
-				}
-			}
-		}
-		repaint();
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
+	
 
 	public void desenhaAresta() {
 	}
@@ -166,10 +120,10 @@ public class Grafo extends JPanel implements MouseListener {
 		} else {
 			for (int i = 0; i < this.numVertices(); i++) {
 				g.setColor(colorNode[i]);
-				g.fillOval(x_coord_V[i], y_coord_V[i], RAIO_NO, RAIO_NO);
+				g.fillOval(xCoordV[i], yCoordV[i], RAIO_NO, RAIO_NO);
 
 				g.setColor(Color.BLUE);
-				g.drawString(Integer.toString(i), x_coord_V[i] + X_OFF, y_coord_V[i] + Y_OFF);
+				g.drawString(Integer.toString(i), xCoordV[i] + X_OFF, yCoordV[i] + Y_OFF);
 			}
 			conectEdges(g);
 		}
@@ -177,11 +131,13 @@ public class Grafo extends JPanel implements MouseListener {
 
 	public void drawGrafoCircular(Graphics g) {
 
-		X_0 = 250;
-		Y_0 = 250;
+		x0 = 250;
+		y0 = 250;
 		
 		final int RADIUS = 150;
-		double rad, angulo, anguloStep;
+		double rad;
+		double angulo;
+		double anguloStep;
 
 		anguloStep = 360 / numVertices();
 		angulo = 0.0;
@@ -189,8 +145,8 @@ public class Grafo extends JPanel implements MouseListener {
 		for (int i = 0; i < numVertices(); i++) {
 			rad = (Math.PI / 180) * angulo;
 
-			x_coord_V[i] = X_0 + (int) (RADIUS * Math.cos(rad));
-			y_coord_V[i] = Y_0 + (int) (RADIUS * Math.sin(rad));
+			xCoordV[i] = x0 + (int) (RADIUS * Math.cos(rad));
+			yCoordV[i] = y0 + (int) (RADIUS * Math.sin(rad));
 			colorNode[i] = Color.WHITE;
 			angulo = angulo + anguloStep;
 		}
@@ -199,18 +155,18 @@ public class Grafo extends JPanel implements MouseListener {
 
 	void drawGrafoRetangular(Graphics g) {
 
-		X_0 = 70;
-		Y_0 = 70;
+		x0 = 70;
+		y0 = 70;
 
 		int colCount = 0;
-		int xCoord = X_0;
-		int yCoord = Y_0;
+		int xCoord = x0;
+		int yCoord = y0;
 
 		for (int i = 0; i < this.numVertices(); i++) {
 
 			if (colCount < MAX_COL) {
-				x_coord_V[i] = xCoord;
-				y_coord_V[i] = yCoord;
+				xCoordV[i] = xCoord;
+				yCoordV[i] = yCoord;
 				colorNode[i] = Color.WHITE;
 
 				xCoord = xCoord + 2 * RAIO_NO;
@@ -218,10 +174,10 @@ public class Grafo extends JPanel implements MouseListener {
 			} else {
 				colCount = 0;
 				yCoord = yCoord + 2 * RAIO_NO;
-				xCoord = X_0;
+				xCoord = x0;
 
-				x_coord_V[i] = xCoord;
-				y_coord_V[i] = yCoord;
+				xCoordV[i] = xCoord;
+				yCoordV[i] = yCoord;
 				colorNode[i] = Color.WHITE;
 
 				xCoord = xCoord + 2 * RAIO_NO;
@@ -232,65 +188,65 @@ public class Grafo extends JPanel implements MouseListener {
 
 	public void conectEdges(Graphics g) {
 		
-		int x0_inter = 0;
-		int y0_inter = 0;
-		int x1_inter = 0;
-		int y1_inter = 0;
+		int x0Inter = 0;
+		int y0Inter = 0;
+		int x1Inter = 0;
+		int y1Inter = 0;
 
 		double scale = 0.0d;
 
-		int x0_aux_coord = 0;
-		int y0_aux_coord = 0;
+		int x0AuxCoord = 0;
+		int y0AuxCoord = 0;
 
-		int x1_aux_coord = 0;
-		int y1_aux_coord = 0;
+		int x1AuxCoord = 0;
+		int y1AuxCoord = 0;
 
-		int d_x = 0;
-		int d_y = 0;
+		int dx = 0;
+		int dy = 0;
 
 		for (int i = 0; i < this.numVertices(); i++) {
 			AdjArray a = this.getAdjList(i);
 
 			for (int j = a.beginning(); !a.end(); j = a.next()) {
 
-				x0_aux_coord = x_coord_V[i] + X_OFF;
-				y0_aux_coord = y_coord_V[i] + Y_OFF;
+				x0AuxCoord = xCoordV[i] + X_OFF;
+				y0AuxCoord = yCoordV[i] + Y_OFF;
 
-				x1_aux_coord = x_coord_V[j] + X_OFF;
-				y1_aux_coord = y_coord_V[j] + Y_OFF;
+				x1AuxCoord = xCoordV[j] + X_OFF;
+				y1AuxCoord = yCoordV[j] + Y_OFF;
 
-				d_x = Math.abs(x1_aux_coord - x0_aux_coord);
-				d_y = Math.abs(y1_aux_coord - y0_aux_coord);
+				dx = Math.abs(x1AuxCoord - x0AuxCoord);
+				dy = Math.abs(y1AuxCoord - y0AuxCoord);
 
-				scale = RAIO_NO / 2 / ((Math.sqrt(d_x * d_x + d_y * d_y)));
+				scale = RAIO_NO / 2 / ((Math.sqrt(dx * dx + dy * dy)));
 
-				if (x0_aux_coord > x1_aux_coord) {
-					x0_inter = x0_aux_coord - (int) (scale * d_x);
-					x1_inter = x1_aux_coord + (int) (scale * d_x);
+				if (x0AuxCoord > x1AuxCoord) {
+					x0Inter = x0AuxCoord - (int) (scale * dx);
+					x1Inter = x1AuxCoord + (int) (scale * dx);
 				} else {
-					x0_inter = x0_aux_coord + (int) (scale * d_x);
-					x1_inter = x1_aux_coord - (int) (scale * d_x);
+					x0Inter = x0AuxCoord + (int) (scale * dx);
+					x1Inter = x1AuxCoord - (int) (scale * dx);
 				}
 
-				if (y0_aux_coord > y1_aux_coord) {
-					y0_inter = y0_aux_coord - (int) (scale * d_y);
-					y1_inter = y1_aux_coord + (int) (scale * d_y);
+				if (y0AuxCoord > y1AuxCoord) {
+					y0Inter = y0AuxCoord - (int) (scale * dy);
+					y1Inter = y1AuxCoord + (int) (scale * dy);
 				} else {
-					y0_inter = y0_aux_coord + (int) (scale * d_y);
-					y1_inter = y1_aux_coord - (int) (scale * d_y);
+					y0Inter = y0AuxCoord + (int) (scale * dy);
+					y1Inter = y1AuxCoord - (int) (scale * dy);
 				}
 
 				g.setColor(Color.BLUE);
-				g.drawLine(x0_inter, y0_inter, x1_inter, y1_inter);
+				g.drawLine(x0Inter, y0Inter, x1Inter, y1Inter);
 			}
 		}
 
 		for (int i = 0; i < this.numVertices(); i++) {
 			g.setColor(colorNode[i]);
-			g.fillOval(x_coord_V[i], y_coord_V[i], RAIO_NO, RAIO_NO);
+			g.fillOval(xCoordV[i], yCoordV[i], RAIO_NO, RAIO_NO);
 
 			g.setColor(Color.BLUE);
-			g.drawString(Integer.toString(i), x_coord_V[i] + X_OFF, y_coord_V[i] + Y_OFF);
+			g.drawString(Integer.toString(i), xCoordV[i] + X_OFF, yCoordV[i] + Y_OFF);
 		}
 		done = true;
 	}
@@ -301,7 +257,7 @@ public class Grafo extends JPanel implements MouseListener {
 		int w = e.w;
 
 		if (!adjacencies[v][w]) {
-			EdgeCount++;
+			edgeCount++;
 			adjacencies[v][w] = true;
 		}
 
@@ -316,7 +272,7 @@ public class Grafo extends JPanel implements MouseListener {
 		int w = e.w;
 
 		if (adjacencies[v][w]) {
-			EdgeCount--;
+			edgeCount--;
 			adjacencies[v][w] = false;
 		}
 
@@ -360,5 +316,45 @@ public class Grafo extends JPanel implements MouseListener {
 			return i >= numVertices();
 		}
 	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		for (int i = 0; i < this.numVertices(); i++) {
+			
+			//colorNode[i] = Color.GREEN;
+
+			int dX = 0;
+			int dY = 0;
+
+			dX = Math.abs(xCoordV[i] - e.getX());
+			dY = Math.abs(yCoordV[i] - e.getY());
+
+			if (dX <= RAIO_NO && dY <= RAIO_NO) {
+				if ((primeiro == -1) && (segundo == -1)) {
+					colorNode[i] = Color.GREEN;
+					primeiro = i;
+					System.out.println("Primeiro nó Selecionado");
+				} else if (segundo == -1) {
+					colorNode[i] = Color.RED;
+					segundo = i;
+					System.out.println("Segundo nó Selecionado");
+				}
+			}
+		}
+		repaint();
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) { }
+
+	@Override
+	public void mousePressed(MouseEvent e) { }
+
+	@Override
+	public void mouseReleased(MouseEvent e) { }
+
+	@Override
+	public void mouseEntered(MouseEvent e) { }
 
 }

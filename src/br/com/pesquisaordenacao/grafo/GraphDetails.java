@@ -5,6 +5,7 @@ import br.com.pesquisaordenacao.grafo.Grafo.AdjArray;
 public class GraphDetails {
 	
 	public void display(Grafo g) {
+		
 		System.out.println("Graph details");
 
 		for (int i = 0; i < g.numVertices(); i++) {

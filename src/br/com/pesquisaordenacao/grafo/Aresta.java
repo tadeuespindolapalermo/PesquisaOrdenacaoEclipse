@@ -1,6 +1,7 @@
 package br.com.pesquisaordenacao.grafo;
 
 public class Aresta {
+	
 	int v;
 	int w;
 
